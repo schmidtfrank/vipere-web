@@ -28,6 +28,14 @@ async def getQuote(req : web.Request) -> web.Response:
     returnVal["author"] = quoteAuthor
     return web.json_response(data=returnVal, status=200)
 
+@routes.get("/vipere")
+async def getViperes(req : web.Request) -> web.Response:
+    pass
+
+@routes.get("/hydras")
+async def getHydras(req : web.Request) -> web.Response:
+    pass
+
 if __name__ == '__main__':
     app = web.Application(middlewares=[
         cors_middleware(origins=["http://localhost:3000"])
