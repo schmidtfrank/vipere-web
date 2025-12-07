@@ -65,6 +65,40 @@ async def getHydras(req : web.Request) -> web.Response:
         returnList.append(currVal)
     return web.json_response(data=returnList, status=200)
 
+@routes.get("/raids")
+async def getRaid(req : web.Request) -> web.Response:
+    con = sqlite3.connect("vipere.db")
+    cur = con.cursor()
+
+    response = cur.execute("SELECT OppName, Outcome FROM Raids")
+    raidOutcomes = response.fetchall()
+
+    returnList = []
+    for Opponent, Outcome in raidOutcomes:
+        currVal = dict()
+        currVal["OppName"] = Opponent
+        currVal["Outcome"] = Outcome
+        returnList.append(currVal)
+    return web.json_response(data=returnList)
+
+@routes.get("/scrimmages")
+async def getScrims(req : web.Request) -> web.Response:
+    con = sqlite3.connect("vipere.db")
+    cur = con.cursor()
+
+    response = cur.execute("SELECT OppName, VipereScore, OppScore, Outcome FROM Scrimmages")
+    scrimOutcomes = response.fetchall()
+
+    returnList = []
+    for OppName, VipereScore, OppScore, Outcomes in scrimOutcomes:
+        curr = dict()
+        curr["OppName"] = OppName
+        curr["VipereScore"] = VipereScore
+        curr["OppScore"] = OppScore
+        curr["Outcome"] = Outcomes
+        returnList.append(curr)
+    return web.json_response(data=returnList)
+
 if __name__ == '__main__':
     app = web.Application(middlewares=[
         cors_middleware(origins=["http://localhost:3000"])

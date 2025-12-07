@@ -1,7 +1,6 @@
-CREATE TABLE People (
-    UserID INT,
-    Username VARCHAR(50),
-    Rank VARCHAR(50),
-    Division VARCHAR(50),
-    PRIMARY KEY(UserId)
-);
+CREATE TABLE Medals (
+    MedalID INT,
+    MedalName VARCHAR(100),
+    Criteria VARCHAR(50),
+    PRIMARY KEY(MedalID)
+)

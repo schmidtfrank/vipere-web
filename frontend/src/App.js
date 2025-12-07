@@ -19,6 +19,8 @@ export default function App() {
   // Landing Page Data State
   const [vipereData, setVipereData] = useState([]);
   const [hydrasData, setHydrasData] = useState([]);
+  const [raidsData, setRaidsData] = useState([]);
+  const [scrimmagesData, setScrimmagesData] = useState([]);
 
   useEffect(() => {
     // 1. Generate random stars
@@ -65,6 +67,17 @@ export default function App() {
       .then(res => res.json())
       .then(data => setHydrasData(data))
       .catch(err => console.error('Error fetching Hydras data:', err));
+
+    // 4. Fetch Records Data
+    fetch('http://localhost:8000/raids')
+      .then(res => res.json())
+      .then(data => setRaidsData(data))
+      .catch(err => console.error('Error fetching Raids data:', err));
+
+    fetch('http://localhost:8000/scrimmages')
+      .then(res => res.json())
+      .then(data => setScrimmagesData(data))
+      .catch(err => console.error('Error fetching Scrimmages data:', err));
 
   }, []);
 
@@ -280,6 +293,82 @@ export default function App() {
       marginTop: '60px',
       position: 'relative',
       zIndex: 2
+    },
+
+    // --- Record Page Styles ---
+    recordPage: {
+      minHeight: '100vh',
+      background: 'radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%)',
+      color: '#fff',
+      padding: '100px 40px 40px 40px',
+      position: 'relative',
+      overflow: 'hidden'
+    },
+    recordTitle: {
+      fontSize: '3.5rem',
+      fontWeight: '900',
+      color: '#aaffaa',
+      textAlign: 'center',
+      marginBottom: '60px',
+      textTransform: 'uppercase',
+      letterSpacing: '4px',
+      zIndex: 2,
+      position: 'relative'
+    },
+    recordContainer: {
+      maxWidth: '1200px',
+      margin: '0 auto',
+      display: 'flex',
+      gap: '40px',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
+      position: 'relative',
+      zIndex: 2
+    },
+    recordSection: {
+      flex: 1,
+      minWidth: '400px',
+      backgroundColor: 'rgba(42, 42, 42, 0.7)',
+      padding: '30px',
+      borderRadius: '12px',
+      boxShadow: '0 0 20px rgba(0,0,0,0.5)'
+    },
+    recordSectionTitle: {
+      fontSize: '2rem',
+      fontWeight: 'bold',
+      color: '#32cd32',
+      textAlign: 'center',
+      marginBottom: '25px',
+      textTransform: 'uppercase',
+      letterSpacing: '2px'
+    },
+    recordTable: {
+      width: '100%',
+      borderCollapse: 'collapse'
+    },
+    recordTableHeader: {
+      backgroundColor: 'rgba(50, 205, 50, 0.2)',
+      color: '#aaffaa',
+      padding: '12px',
+      textAlign: 'left',
+      borderBottom: '2px solid #32cd32',
+      fontWeight: 'bold',
+      fontSize: '0.9rem'
+    },
+    recordTableRow: {
+      borderBottom: '1px solid #444'
+    },
+    recordTableCell: {
+      padding: '12px',
+      fontSize: '0.9rem'
+    },
+    winCell: {
+      color: '#32cd32',
+      fontWeight: 'bold'
+    },
+    lossCell: {
+      color: '#ff4444',
+      fontWeight: 'bold'
     }
   };
 
@@ -356,20 +445,25 @@ export default function App() {
       >
         Timeline
       </button>
+      <button 
+        className={`nav-btn ${currentPage === 'record' ? 'active' : ''}`}
+        style={styles.navButton}
+        onClick={() => setCurrentPage('record')}
+      >
+        Record
+      </button>
     </div>
   );
 
   // --- Render Timeline Page ---
   if (currentPage === 'timeline') {
     const events = [
-      { title: 'The Founding of the Kingdom of Viperia', side: 'left' },
+      { title: 'Founding of Viperia', side: 'left' },
       { title: 'The Era of Genesis', side: 'right' },
-      { title: 'The Great Ouroboros War', side: 'left' },
+      { title: 'Great Ouroboros War', side: 'left' },
       { title: 'The Dark Ages', side: 'right' },
-      { title: 'The Reclamation of Order', side : 'left'},
-      { title: 'Ascension of WrathHydra and Dawn of the Modern Era', side: 'right' },
-      { title: 'The Domination of the Modern Age', side: 'left' },
-      { title: 'The Apex of Viperian Might', side: 'right'}
+      { title: 'Ascension of WrathHydra and Start of the Modern Era', side: 'left' },
+      { title: 'Domination of the Modern Age', side: 'right' }
     ];
 
     return (
@@ -405,7 +499,7 @@ export default function App() {
           ))}
 
           <h1 className="timeline-title-glow" style={styles.timelineTitle}>
-            History of Viperia
+            History of Vipere
           </h1>
 
           <div style={styles.timelineContainer}>
@@ -433,6 +527,124 @@ export default function App() {
             ))}
 
             <div style={styles.timelineEnd}>The story continues...</div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  // --- Render Record Page ---
+  if (currentPage === 'record') {
+    return (
+      <>
+        <Navbar />
+        <div style={styles.recordPage}>
+          <style>
+            {`
+              @keyframes glow-pulse {
+                0%, 100% { text-shadow: 0 0 10px #32cd32, 0 0 20px #32cd32; }
+                50% { text-shadow: 0 0 20px #32cd32, 0 0 40px #32cd32, 0 0 60px #008000; }
+              }
+              .record-title-glow {
+                animation: glow-pulse 2s infinite;
+              }
+            `}
+          </style>
+          
+          {/* Static Stars */}
+          {stars.map((star, i) => (
+            <div
+              key={i}
+              style={{
+                ...styles.star,
+                left: star.left,
+                top: star.top,
+                width: `${star.size}px`,
+                height: `${star.size}px`,
+                opacity: star.opacity,
+                zIndex: 1
+              }}
+            />
+          ))}
+
+          <h1 className="record-title-glow" style={styles.recordTitle}>
+            Vipere Record
+          </h1>
+
+          <div style={styles.recordContainer}>
+            
+            {/* Raid Wins Section */}
+            <div style={styles.recordSection}>
+              <h2 style={styles.recordSectionTitle}>Raid Wins</h2>
+              <table style={styles.recordTable}>
+                <thead>
+                  <tr>
+                    <th style={styles.recordTableHeader}>Opponent</th>
+                    <th style={styles.recordTableHeader}>Outcome</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {raidsData.length > 0 ? (
+                    raidsData.map((raid, index) => (
+                      <tr key={index} style={styles.recordTableRow}>
+                        <td style={styles.recordTableCell}>{raid.OppName}</td>
+                        <td style={{
+                          ...styles.recordTableCell,
+                          ...(raid.Outcome === 'W' ? styles.winCell : styles.lossCell)
+                        }}>
+                          {raid.Outcome === 'W' ? 'Win' : 'Loss'}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="2" style={{...styles.recordTableCell, textAlign: 'center', fontStyle: 'italic', color: '#666'}}>
+                        Loading Raid data...
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Scrimmage Wins Section */}
+            <div style={styles.recordSection}>
+              <h2 style={styles.recordSectionTitle}>Scrimmage Wins</h2>
+              <table style={styles.recordTable}>
+                <thead>
+                  <tr>
+                    <th style={styles.recordTableHeader}>Opponent</th>
+                    <th style={styles.recordTableHeader}>Score</th>
+                    <th style={styles.recordTableHeader}>Outcome</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {scrimmagesData.length > 0 ? (
+                    scrimmagesData.map((scrim, index) => (
+                      <tr key={index} style={styles.recordTableRow}>
+                        <td style={styles.recordTableCell}>{scrim.OppName}</td>
+                        <td style={styles.recordTableCell}>
+                          {scrim.VipereScore} - {scrim.OppScore}
+                        </td>
+                        <td style={{
+                          ...styles.recordTableCell,
+                          ...(scrim.Outcome === 'W' ? styles.winCell : styles.lossCell)
+                        }}>
+                          {scrim.Outcome === 'W' ? 'Win' : 'Loss'}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="3" style={{...styles.recordTableCell, textAlign: 'center', fontStyle: 'italic', color: '#666'}}>
+                        Loading Scrimmage data...
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
           </div>
         </div>
       </>
