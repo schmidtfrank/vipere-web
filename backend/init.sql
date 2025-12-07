@@ -1,6 +1,7 @@
-CREATE TABLE Medals (
+Create Table UserMedals (
+    UserID INT,
     MedalID INT,
-    MedalName VARCHAR(100),
-    Criteria VARCHAR(50),
-    PRIMARY KEY(MedalID)
-)
+    PRIMARY KEY(UserID, MedalID),
+    FOREIGN KEY (UserID) REFERENCES People(UserID),
+    FOREIGN KEY (MedalID) REFERENCES Medals(MedalID)
+);

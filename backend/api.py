@@ -99,6 +99,30 @@ async def getScrims(req : web.Request) -> web.Response:
         returnList.append(curr)
     return web.json_response(data=returnList)
 
+@routes.get("/medal/{id}")
+async def getMedalRecipients(req : web.Request) -> web.Response:
+    #get medalID
+    medalID = req.match_info["id"]
+    medalID = int(medalID)
+    if medalID in [1,2,3]:
+        pass
+    else:
+        print("hit!")
+        return web.Response(status=400)
+    
+    con = sqlite3.connect("vipere.db")
+    cur = con.cursor()
+
+    response = cur.execute(f"SELECT Username FROM People p JOIN UserMedals um ON p.UserID = um.UserID WHERE um.MedalID = {medalID}")
+    medalRecipients = response.fetchall()
+
+    returnList = []
+    for Username in medalRecipients:
+        curr = dict()
+        curr["name"] = Username
+        returnList.append(curr)
+    return web.json_response(data=returnList)
+
 if __name__ == '__main__':
     app = web.Application(middlewares=[
         cors_middleware(origins=["http://localhost:3000"])
