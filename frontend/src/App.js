@@ -11,14 +11,17 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [showQuote, setShowQuote] = useState(true);
   const [fadeOut, setFadeOut] = useState(false);
-  const [stars, setStars] = useState([]); // Used for both screens now
+  const [stars, setStars] = useState([]);
+
+  // Page Navigation
+  const [currentPage, setCurrentPage] = useState('home');
 
   // Landing Page Data State
   const [vipereData, setVipereData] = useState([]);
   const [hydrasData, setHydrasData] = useState([]);
 
   useEffect(() => {
-    // 1. Generate random stars (used for both screens)
+    // 1. Generate random stars
     const newStars = [];
     for (let i = 0; i < 200; i++) {
       newStars.push({
@@ -31,14 +34,13 @@ export default function App() {
     }
     setStars(newStars);
 
-    // 2. Fetch Quote (Intro)
+    // 2. Fetch Quote
     fetch('http://localhost:8000/quote')
       .then(response => response.json())
       .then(data => {
         setQuote(data);
         setLoading(false);
         
-        // Start fade out sequence
         setTimeout(() => {
           setFadeOut(true);
           setTimeout(() => {
@@ -53,8 +55,7 @@ export default function App() {
         setTimeout(() => { setFadeOut(true); setTimeout(() => setShowQuote(false), 1000); }, 4000);
       });
 
-    // 3. Fetch Landing Page Data (Pre-load while intro plays)
-    
+    // 3. Fetch Landing Page Data
     fetch('http://localhost:8000/vipere')
       .then(res => res.json())
       .then(data => setVipereData(data))
@@ -68,7 +69,7 @@ export default function App() {
   }, []);
 
   const styles = {
-    // --- Intro Styles (Unchanged) ---
+    // --- Intro Styles ---
     quoteScreen: {
       position: 'fixed',
       top: 0, left: 0, right: 0, bottom: 0,
@@ -85,7 +86,6 @@ export default function App() {
       position: 'absolute',
       backgroundColor: '#fff',
       borderRadius: '50%',
-      // We will remove animation for the static stars on the landing page
     },
     quoteContainer: {
       maxWidth: '800px',
@@ -107,18 +107,44 @@ export default function App() {
       fontSize: '1.5rem'
     },
 
-    // --- Landing Page Styles (Updated for Static Stars) ---
+    // --- Navigation Bar ---
+    navbar: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      height: '60px',
+      background: 'transparent',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: '30px',
+      zIndex: 100
+    },
+    navButton: {
+      background: 'none',
+      border: 'none',
+      color: '#aaffaa',
+      fontSize: '1rem',
+      fontWeight: '600',
+      padding: '10px 20px',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      textTransform: 'uppercase',
+      letterSpacing: '1px'
+    },
+
+    // --- Landing Page Styles ---
     landingPage: {
       minHeight: '100vh',
-      // SPACE BACKGROUND
       background: 'radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%)', 
       color: '#fff',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      padding: '40px 20px',
+      padding: '100px 20px 40px 20px',
       overflow: 'hidden',
-      position: 'relative' // Needed for the stars to position correctly
+      position: 'relative'
     },
     landingTitle: {
       fontSize: '4rem', 
@@ -128,7 +154,7 @@ export default function App() {
       textTransform: 'uppercase',
       letterSpacing: '5px', 
       textAlign: 'center',
-      zIndex: 2, // Ensure title is above stars
+      zIndex: 2,
       position: 'relative'
     },
     contentRow: {
@@ -139,7 +165,7 @@ export default function App() {
       maxWidth: '1200px',
       gap: '40px',
       flexWrap: 'wrap',
-      zIndex: 2, // Ensure content is above stars
+      zIndex: 2,
       position: 'relative'
     },
     column: {
@@ -154,7 +180,6 @@ export default function App() {
       height: '200px',
       objectFit: 'contain',
       marginBottom: '20px',
-      // GLOW EFFECT for images
       filter: 'drop-shadow(0 0 20px rgba(255, 255, 255, 0.2))'
     },
     listContainer: {
@@ -179,10 +204,86 @@ export default function App() {
       flex: 0.8,
       display: 'flex',
       justifyContent: 'center'
+    },
+
+    // --- Timeline Page Styles ---
+    timelinePage: {
+      minHeight: '100vh',
+      background: 'radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%)',
+      color: '#fff',
+      padding: '100px 40px 40px 40px',
+      position: 'relative',
+      overflow: 'hidden'
+    },
+    timelineTitle: {
+      fontSize: '3.5rem',
+      fontWeight: '900',
+      color: '#aaffaa',
+      textAlign: 'center',
+      marginBottom: '80px',
+      textTransform: 'uppercase',
+      letterSpacing: '4px',
+      zIndex: 2,
+      position: 'relative'
+    },
+    timelineContainer: {
+      maxWidth: '1000px',
+      margin: '0 auto',
+      position: 'relative',
+      zIndex: 2
+    },
+    timelineLine: {
+      position: 'absolute',
+      left: '50%',
+      top: 0,
+      height: 'calc(100% - 150px)',
+      width: '4px',
+      background: 'linear-gradient(to bottom, #32cd32, #008000)',
+      transform: 'translateX(-50%)'
+    },
+    timelineEvent: {
+      position: 'relative',
+      marginBottom: '80px',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center'
+    },
+    timelineDot: {
+      position: 'absolute',
+      left: '50%',
+      transform: 'translateX(-50%)',
+      width: '20px',
+      height: '20px',
+      borderRadius: '50%',
+      backgroundColor: '#32cd32',
+      boxShadow: '0 0 20px #32cd32',
+      zIndex: 3
+    },
+    timelineContent: {
+      width: '45%',
+      backgroundColor: 'rgba(42, 42, 42, 0.7)',
+      padding: '25px',
+      borderRadius: '10px',
+      boxShadow: '0 0 20px rgba(0,0,0,0.5)'
+    },
+    timelineEventTitle: {
+      fontSize: '1.5rem',
+      fontWeight: 'bold',
+      color: '#aaffaa',
+      marginBottom: '10px'
+    },
+    timelineEnd: {
+      textAlign: 'center',
+      fontSize: '2rem',
+      fontStyle: 'italic',
+      color: '#32cd32',
+      marginTop: '60px',
+      position: 'relative',
+      zIndex: 2
     }
   };
 
-  // --- Render Intro Screen (Unchanged) ---
+  // --- Render Intro Screen ---
   if (showQuote) {
     return (
       <div style={styles.quoteScreen}>
@@ -205,7 +306,7 @@ export default function App() {
               height: `${star.size}px`,
               opacity: star.opacity,
               animationDelay: star.animationDelay,
-              animationName: 'twinkle' // Only animate here
+              animation: 'twinkle 3s infinite'
             }}
           />
         ))}
@@ -225,21 +326,130 @@ export default function App() {
     );
   }
 
-  // --- Render Landing Page (Updated) ---
+  // --- Navigation Bar Component ---
+  const Navbar = () => (
+    <div style={styles.navbar}>
+      <style>
+        {`
+          .nav-btn:hover {
+            color: #32cd32;
+            text-shadow: 0 0 10px #32cd32;
+            transform: translateY(-2px);
+          }
+          .nav-btn.active {
+            color: #32cd32;
+            text-shadow: 0 0 10px #32cd32;
+          }
+        `}
+      </style>
+      <button 
+        className={`nav-btn ${currentPage === 'home' ? 'active' : ''}`}
+        style={styles.navButton}
+        onClick={() => setCurrentPage('home')}
+      >
+        Home
+      </button>
+      <button 
+        className={`nav-btn ${currentPage === 'timeline' ? 'active' : ''}`}
+        style={styles.navButton}
+        onClick={() => setCurrentPage('timeline')}
+      >
+        Timeline
+      </button>
+    </div>
+  );
+
+  // --- Render Timeline Page ---
+  if (currentPage === 'timeline') {
+    const events = [
+      { title: 'The Founding of the Kingdom of Viperia', side: 'left' },
+      { title: 'The Era of Genesis', side: 'right' },
+      { title: 'The Great Ouroboros War', side: 'left' },
+      { title: 'The Dark Ages', side: 'right' },
+      { title: 'The Reclamation of Order', side : 'left'},
+      { title: 'Ascension of WrathHydra and Dawn of the Modern Era', side: 'right' },
+      { title: 'The Domination of the Modern Age', side: 'left' },
+      { title: 'The Apex of Viperian Might', side: 'right'}
+    ];
+
+    return (
+      <>
+        <Navbar />
+        <div style={styles.timelinePage}>
+          <style>
+            {`
+              @keyframes glow-pulse {
+                0%, 100% { text-shadow: 0 0 10px #32cd32, 0 0 20px #32cd32; }
+                50% { text-shadow: 0 0 20px #32cd32, 0 0 40px #32cd32, 0 0 60px #008000; }
+              }
+              .timeline-title-glow {
+                animation: glow-pulse 2s infinite;
+              }
+            `}
+          </style>
+          
+          {/* Static Stars */}
+          {stars.map((star, i) => (
+            <div
+              key={i}
+              style={{
+                ...styles.star,
+                left: star.left,
+                top: star.top,
+                width: `${star.size}px`,
+                height: `${star.size}px`,
+                opacity: star.opacity,
+                zIndex: 1
+              }}
+            />
+          ))}
+
+          <h1 className="timeline-title-glow" style={styles.timelineTitle}>
+            History of Viperia
+          </h1>
+
+          <div style={styles.timelineContainer}>
+            <div style={styles.timelineLine}></div>
+            
+            {events.map((event, index) => (
+              <div key={index} style={styles.timelineEvent}>
+                <div style={styles.timelineDot}></div>
+                {event.side === 'left' ? (
+                  <>
+                    <div style={styles.timelineContent}>
+                      <h3 style={styles.timelineEventTitle}>{event.title}</h3>
+                    </div>
+                    <div style={{width: '45%'}}></div>
+                  </>
+                ) : (
+                  <>
+                    <div style={{width: '45%'}}></div>
+                    <div style={styles.timelineContent}>
+                      <h3 style={styles.timelineEventTitle}>{event.title}</h3>
+                    </div>
+                  </>
+                )}
+              </div>
+            ))}
+
+            <div style={styles.timelineEnd}>The story continues...</div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  // --- Render Landing Page ---
   return (
-    <div style={styles.landingPage}>
-        {/* CSS for Glowing Title Effect (Dark Green) */}
+    <>
+      <Navbar />
+      <div style={styles.landingPage}>
         <style>
           {`
             .kingdom-title {
-              /* Ensure the base text color is bright for the glow to work */
               color: #aaffaa; 
-              
-              /* Base dark green glow effect */
               text-shadow: 0 0 10px rgba(0, 255, 0, 0.8), 
                            0 0 20px rgba(0, 255, 0, 0.6);
-              
-              /* Subtle breathing animation for a magical feel */
               animation: neon-glow-green 1.5s infinite alternate;
             }
             @keyframes neon-glow-green {
@@ -253,7 +463,7 @@ export default function App() {
           `}
         </style>
 
-        {/* Static Stars for Background Ambience */}
+        {/* Static Stars */}
         {stars.map((star, i) => (
           <div
             key={i}
@@ -264,74 +474,75 @@ export default function App() {
               width: `${star.size}px`,
               height: `${star.size}px`,
               opacity: star.opacity,
-              zIndex: 1 // Ensure stars are behind the content
+              zIndex: 1
             }}
           />
         ))}
 
-      <h1 
-        style={styles.landingTitle}
-        className="kingdom-title" // Apply the glowing class
-      >
-        Kingdom of Viperia
-      </h1>
-      
-      <div style={styles.contentRow}>
+        <h1 
+          style={styles.landingTitle}
+          className="kingdom-title"
+        >
+          Kingdom of Viperia
+        </h1>
         
-        {/* Left Column: DeathVipere */}
-        <div style={styles.column}>
-          <img 
-            src={DeathVipereImg} 
-            alt="Death Vipere" 
-            style={styles.columnImage} 
-          />
-          <div style={styles.listContainer}>
-            <h3 style={{textAlign: 'center', marginBottom: '15px', color: '#888'}}>Vipere Roster</h3>
-            {vipereData.length > 0 ? (
-              vipereData.map((user, index) => (
-                <div key={index} style={styles.listItem}>
-                  <span>{user.username || user.name}</span>
-                  <span style={styles.rankText}>{user.rank}</span>
-                </div>
-              ))
-            ) : (
-              <div style={{textAlign: 'center', fontStyle: 'italic', color: '#666'}}>Loading Vipere Roster...</div>
-            )}
+        <div style={styles.contentRow}>
+          
+          {/* Left Column: DeathVipere */}
+          <div style={styles.column}>
+            <img 
+              src={DeathVipereImg} 
+              alt="Death Vipere" 
+              style={styles.columnImage} 
+            />
+            <div style={styles.listContainer}>
+              <h3 style={{textAlign: 'center', marginBottom: '15px', color: '#888'}}>Vipere Roster</h3>
+              {vipereData.length > 0 ? (
+                vipereData.map((user, index) => (
+                  <div key={index} style={styles.listItem}>
+                    <span>{user.username || user.name}</span>
+                    <span style={styles.rankText}>{user.rank}</span>
+                  </div>
+                ))
+              ) : (
+                <div style={{textAlign: 'center', fontStyle: 'italic', color: '#666'}}>Loading Vipere Roster...</div>
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* Middle Column: Logo */}
-        <div style={{...styles.column, ...styles.logoColumn}}>
-          <img 
-            src={VipereLogoImg} 
-            alt="Vipere Logo" 
-            style={{...styles.columnImage, width: '250px', height: '250px'}} 
-          />
-        </div>
-
-        {/* Right Column: WrathHydra */}
-        <div style={styles.column}>
-          <img 
-            src={WrathHydraImg} 
-            alt="Wrath Hydra" 
-            style={styles.columnImage} 
-          />
-          <div style={styles.listContainer}>
-            <h3 style={{textAlign: 'center', marginBottom: '15px', color: '#888'}}>Royal Family</h3>
-            {hydrasData.length > 0 ? (
-              hydrasData.map((user, index) => (
-                <div key={index} style={styles.listItem}>
-                  <span>{user.username || user.name}</span>
-                  <span style={styles.rankText}>{user.rank}</span>
-                </div>
-              ))
-            ) : (
-              <div style={{textAlign: 'center', fontStyle: 'italic', color: '#666'}}>Loading Hydra Roster...</div>
-            )}
+          {/* Middle Column: Logo */}
+          <div style={{...styles.column, ...styles.logoColumn}}>
+            <img 
+              src={VipereLogoImg} 
+              alt="Vipere Logo" 
+              style={{...styles.columnImage, width: '250px', height: '250px'}} 
+            />
           </div>
-        </div>
 
+          {/* Right Column: WrathHydra */}
+          <div style={styles.column}>
+            <img 
+              src={WrathHydraImg} 
+              alt="Wrath Hydra" 
+              style={styles.columnImage} 
+            />
+            <div style={styles.listContainer}>
+              <h3 style={{textAlign: 'center', marginBottom: '15px', color: '#888'}}>Royal Family</h3>
+              {hydrasData.length > 0 ? (
+                hydrasData.map((user, index) => (
+                  <div key={index} style={styles.listItem}>
+                    <span>{user.username || user.name}</span>
+                    <span style={styles.rankText}>{user.rank}</span>
+                  </div>
+                ))
+              ) : (
+                <div style={{textAlign: 'center', fontStyle: 'italic', color: '#666'}}>Loading Hydra Roster...</div>
+              )}
+            </div>
+          </div>
+
+        </div>
       </div>
-    </div>
+    </>
   );
 }
