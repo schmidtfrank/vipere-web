@@ -30,11 +30,40 @@ async def getQuote(req : web.Request) -> web.Response:
 
 @routes.get("/vipere")
 async def getViperes(req : web.Request) -> web.Response:
-    pass
+    #connect to db
+    con = sqlite3.connect("vipere.db")
+    cur = con.cursor()
+
+    #get all viperes
+    response = cur.execute("SELECT Username, Rank FROM People WHERE Division = \"Vipere\"")
+    viperes = response.fetchall()
+    
+    #iter through for a list of user and rank
+    returnList = []
+    for user, rank in viperes:
+        currVal = dict()
+        currVal["username"] = user
+        currVal["rank"] = rank
+        returnList.append(currVal)
+    return web.json_response(data=returnList, status=200)
 
 @routes.get("/hydras")
 async def getHydras(req : web.Request) -> web.Response:
-    pass
+    con = sqlite3.connect("vipere.db")
+    cur = con.cursor()
+
+    #get all viperes
+    response = cur.execute("SELECT Username, Rank FROM People WHERE Division = \"Kingdom of Viperia\"")
+    viperes = response.fetchall()
+    
+    #iter through for a list of user and rank
+    returnList = []
+    for user, rank in viperes:
+        currVal = dict()
+        currVal["username"] = user
+        currVal["rank"] = rank
+        returnList.append(currVal)
+    return web.json_response(data=returnList, status=200)
 
 if __name__ == '__main__':
     app = web.Application(middlewares=[
