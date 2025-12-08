@@ -125,12 +125,37 @@ async def getMedalRecipients(req : web.Request) -> web.Response:
 
 @routes.post("/login")
 async def checkLogin(req : web.Request) -> web.Response:
-    attemptUsername = req["user"]
-    attemptPassword = req["password"]
+    request = await req.json()
 
-    print(f"user tried {attemptUsername}, and {attemptPassword}")
+    attemptUsername = request["user"]
+    attemptPassword = request["password"]
 
-    return web.Response(status=200)
+    con = sqlite3.connect("admin.db")
+    cur = con.cursor()
+
+    response = cur.execute(f"SELECT AdminPassword FROM AdminAccess WHERE AdminUsername = ?", (attemptUsername,))
+    isAdmin = response.fetchone()
+    
+    if isAdmin is None:
+        #invalid user
+        print("invalid user!")
+        return web.response(status=400)
+    elif attemptPassword == isAdmin[0]:
+        #valid password
+        print("valid password!")
+        return web.json_response(status=200, data={"success": True})
+    
+    #invalid password
+    print("invalid password!")
+    return web.Response(status=400)
+
+@routes.post("/raid")
+async def addRaid(req : web.Request) -> web.Response:
+    raise Exception(NotImplementedError)
+
+@routes.post("/scrimmage")
+async def addScrimmage(req : web.Request) -> web.Response:
+    raise Exception(NotImplementedError)
 
 
 if __name__ == '__main__':
