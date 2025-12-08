@@ -133,7 +133,7 @@ async def checkLogin(req : web.Request) -> web.Response:
     con = sqlite3.connect("admin.db")
     cur = con.cursor()
 
-    response = cur.execute(f"SELECT AdminPassword FROM AdminAccess WHERE AdminUsername = ?", (attemptUsername,))
+    response = cur.execute("SELECT AdminPassword FROM AdminAccess WHERE AdminUsername = ?", (attemptUsername,))
     isAdmin = response.fetchone()
     
     if isAdmin is None:
@@ -151,7 +151,20 @@ async def checkLogin(req : web.Request) -> web.Response:
 
 @routes.post("/raid")
 async def addRaid(req : web.Request) -> web.Response:
-    raise Exception(NotImplementedError)
+    #request sent as request["opponent"], request["outcome"]
+    request = await req.json()
+
+    opponent = request["opponent"]
+    outcome = request["outcome"]
+
+    con = sqlite3.connect("vipere.db")
+    cur = con.cursor()
+
+    cur.execute("INSERT INTO Raids VALUES ((SELECT MAX(RaidID) FROM Raids)+1,?,?)",(opponent,outcome,))
+    
+    #close transaction
+    con.commit()
+    return web.Response(status=200)
 
 @routes.post("/scrimmage")
 async def addScrimmage(req : web.Request) -> web.Response:

@@ -11,7 +11,7 @@ const InsertRaid = () => {
     
     const raidData = {
       opponent: opponent,
-      outcome: isWin ? 'Win' : 'Loss'
+      outcome: isWin ? 'W' : 'L'
     };
 
     try {
