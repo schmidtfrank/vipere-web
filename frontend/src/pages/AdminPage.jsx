@@ -1,6 +1,7 @@
 import React from 'react';
 import InsertRaid from './PageComponents/InsertRaid';
 import InsertScrimmage from './PageComponents/InsertScrimmage';
+import InsertMedal from './PageComponents/InsertMedal';
 
 
 const AdminPage = ({ stars, currentAdminPage, setCurrentAdminPage }) => {
@@ -89,9 +90,7 @@ const AdminPage = ({ stars, currentAdminPage, setCurrentAdminPage }) => {
           <div style={{ padding: '40px' }}>
             {currentAdminPage === 'insert-raid' && <InsertRaid />}
             {currentAdminPage === 'insert-scrimmage' && <InsertScrimmage />}
-            {currentAdminPage === 'insert-medal' && (
-              <div style={{ color: '#fff', textAlign: 'center' }}>Insert Medal Page (To be implemented)</div>
-            )}
+            {currentAdminPage === 'insert-medal' && <InsertMedal />}
           </div>
       </div>
     </div>

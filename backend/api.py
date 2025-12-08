@@ -139,7 +139,7 @@ async def checkLogin(req : web.Request) -> web.Response:
     if isAdmin is None:
         #invalid user
         print("invalid user!")
-        return web.response(status=400)
+        return web.Response(status=400)
     elif attemptPassword == isAdmin[0]:
         #valid password
         print("valid password!")
@@ -179,12 +179,37 @@ async def addScrimmage(req : web.Request) -> web.Response:
     con = sqlite3.connect("vipere.db")
     cur = con.cursor()
 
-    cur.execute("INSERT INTO Scrimmages VALUES((SELECT MAX(ScrimID) FROM Scrimmages)+1,?,?,?,?)",(opponent,opponentScore,vipereScore,outcome,))
+    cur.execute("INSERT INTO Scrimmages VALUES((SELECT MAX(ScrimID) FROM Scrimmages)+1,?,?,?,?)",(vipereScore,opponentScore,opponent,outcome,))
 
     #commit transaction
     con.commit()
-    raise NotImplementedError
     return web.Response(status=200)
+
+@routes.post("/medal")
+async def addAward(req : web.Request) -> web.Response:
+    #user : string, medal : string
+    request = await req.json()
+    user = request["user"]
+    medal = request["medal"]
+
+    #connect to db
+    con = sqlite3.connect("vipere.db")
+    cur = con.cursor()
+
+    #get relevant user/medal info for insertion
+    medalQuery = cur.execute("SELECT MedalID FROM Medals WHERE MedalName = ?", (medal,))
+    medalID = medalQuery.fetchone()[0]
+
+    userQuery = cur.execute("SELECT UserID FROM People WHERE Username = ?", (user,))
+    userID = userQuery.fetchone()[0]
+
+    cur.execute("INSERT INTO UserMedals VALUES (?, ?)",(userID,medalID,))
+
+    #commit
+    con.commit()
+    return web.Response(status=200)
+
+
 
 
 if __name__ == '__main__':

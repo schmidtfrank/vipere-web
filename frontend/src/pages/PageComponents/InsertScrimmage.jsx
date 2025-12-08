@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
-const scoreOptions = Array.from({ length: 9 }, (_, i) => i + 1);
+const scoreOptions = Array.from({ length: 10 }, (_, i) => i);
 
 const InsertScrimmage = () => {
   const [opponentName, setOpponentName] = useState('');
-  const [opponentScore, setOpponentScore] = useState(1);
-  const [vipereScore, setVipereScore] = useState(1);
+  const [opponentScore, setOpponentScore] = useState(0);
+  const [vipereScore, setVipereScore] = useState(0);
   const [isWin, setIsWin] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -30,8 +30,8 @@ const InsertScrimmage = () => {
       if (response.ok) {
         setMessage('Scrimmage successfully recorded!');
         setOpponentName('');
-        setOpponentScore(1);
-        setVipereScore(1);
+        setOpponentScore(0);
+        setVipereScore(0);
         setIsWin(false);
       } else {
         const errorData = await response.json();
@@ -101,7 +101,7 @@ const InsertScrimmage = () => {
           style={inputStyle}
         />
 
-        <label style={labelStyle}>Opponent Score (1-9):</label>
+        <label style={labelStyle}>Opponent Score (0-9):</label>
         <select 
           value={opponentScore} 
           onChange={(e) => setOpponentScore(e.target.value)} 
@@ -111,7 +111,7 @@ const InsertScrimmage = () => {
           {scoreOptions.map(score => <option key={score} value={score}>{score}</option>)}
         </select>
 
-        <label style={labelStyle}>Vipere Score (1-9):</label>
+        <label style={labelStyle}>Vipere Score (0-9):</label>
         <select 
           value={vipereScore} 
           onChange={(e) => setVipereScore(e.target.value)} 
