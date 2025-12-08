@@ -800,7 +800,7 @@ export default function App() {
         recipients: medal2Data
       },
       {
-        title: 'The Umbral Serpent Absolutum',
+        title: 'Umbra Serpent',
         description: 'An elite, nearly mythic recognition for Viperes who perform with flawless lethality across all operations.',
         criteria: 'Awarded to the select few to earn the HydraVenom Insignia and Neurobite Crest',
         recipients: medal3Data
