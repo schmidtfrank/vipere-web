@@ -1,22 +1,18 @@
-// ./pages/AdminPage.js
-
 import React from 'react';
 import InsertRaid from './PageComponents/InsertRaid';
 import InsertScrimmage from './PageComponents/InsertScrimmage';
 
-// The stars prop is already being passed from App.js
+
 const AdminPage = ({ stars, currentAdminPage, setCurrentAdminPage }) => {
   
-  // Style for the main container to replicate the background
   const backgroundStyle = {
-    // This background matches the one used in IntroQuoteScreen
     background: 'radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%)', 
     minHeight: '100vh', 
     width: '100%',
-    position: 'absolute', // Allows content to overlay correctly
+    position: 'absolute',
     top: 0,
     left: 0,
-    zIndex: 0, // Keep the background behind the Navbar/Admin panel
+    zIndex: 0,
     paddingTop: '60px'
   };
 
@@ -32,12 +28,11 @@ const AdminPage = ({ stars, currentAdminPage, setCurrentAdminPage }) => {
     padding: '20px',
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
     borderBottom: '1px solid #32cd32',
-    position: 'relative', // Ensures nav is above stars
+    position: 'relative',
     zIndex: 2 
   };
 
   const navItemStyle = (page) => ({
-    // ... (rest of the style code for navItemStyle remains the same)
     padding: '10px 20px',
     margin: '0 10px',
     cursor: 'pointer',
@@ -48,7 +43,7 @@ const AdminPage = ({ stars, currentAdminPage, setCurrentAdminPage }) => {
   });
 
   return (
-    <div style={backgroundStyle}> {/* Apply the background and star container */}
+    <div style={backgroundStyle}> {}
       <style>
         {`
           @keyframes twinkle {
@@ -58,7 +53,7 @@ const AdminPage = ({ stars, currentAdminPage, setCurrentAdminPage }) => {
         `}
       </style>
       
-      {/* 2. Map and Render the Stars */}
+      {}
       {stars.map((star, i) => (
         <div
           key={i}
@@ -71,12 +66,12 @@ const AdminPage = ({ stars, currentAdminPage, setCurrentAdminPage }) => {
             opacity: star.opacity,
             animationDelay: star.animationDelay,
             animation: 'twinkle 3s infinite',
-            zIndex: 1 // Stars should be behind the content but in front of the main background
+            zIndex: 1 
           }}
         />
       ))}
       
-      {/* Admin Content Container */}
+      {}
       <div style={{ position: 'relative', zIndex: 3, paddingBottom: '40px' }}>
           <div style={adminNavStyle}>
             <div style={navItemStyle('insert-raid')} onClick={() => setCurrentAdminPage('insert-raid')}>
@@ -90,7 +85,7 @@ const AdminPage = ({ stars, currentAdminPage, setCurrentAdminPage }) => {
             </div>
           </div>
           
-          {/* Render the appropriate admin form */}
+          {}
           <div style={{ padding: '40px' }}>
             {currentAdminPage === 'insert-raid' && <InsertRaid />}
             {currentAdminPage === 'insert-scrimmage' && <InsertScrimmage />}

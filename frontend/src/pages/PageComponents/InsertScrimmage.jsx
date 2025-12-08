@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 
-// Helper for generating number options 1-9
 const scoreOptions = Array.from({ length: 9 }, (_, i) => i + 1);
 
 const InsertScrimmage = () => {
