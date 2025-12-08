@@ -1,7 +1,5 @@
-Create Table UserMedals (
-    UserID INT,
-    MedalID INT,
-    PRIMARY KEY(UserID, MedalID),
-    FOREIGN KEY (UserID) REFERENCES People(UserID),
-    FOREIGN KEY (MedalID) REFERENCES Medals(MedalID)
-);
+CREATE TABLE AdminAccess (
+    AdminUsername VARCHAR(255),
+    AdminPassword VARCHAR(255),
+    PRIMARY KEY(AdminUsername)
+)

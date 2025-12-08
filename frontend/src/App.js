@@ -15,6 +15,11 @@ export default function App() {
 
   // Page Navigation
   const [currentPage, setCurrentPage] = useState('home');
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const [loginUsername, setLoginUsername] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
 
   // Landing Page Data State
   const [vipereData, setVipereData] = useState([]);
@@ -99,6 +104,39 @@ export default function App() {
       .catch(err => console.error('Error fetching Medal 3 data:', err));
 
   }, []);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoginError('');
+    
+    try {
+      const response = await fetch('http://localhost:8000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user: loginUsername,
+          password: loginPassword
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setIsAdmin(true);
+        setShowLoginPopup(false);
+        setLoginUsername('');
+        setLoginPassword('');
+        setCurrentPage('admin');
+      } else {
+        setLoginError(data.message || 'Invalid credentials');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setLoginError('Failed to connect to server');
+    }
+  };
 
   const styles = {
     // --- Intro Styles ---
@@ -495,6 +533,92 @@ export default function App() {
       color: '#666',
       padding: '20px',
       fontSize: '0.9rem'
+    },
+
+    // --- Login Popup Styles ---
+    adminButton: {
+      position: 'fixed',
+      top: '15px',
+      right: '20px',
+      backgroundColor: 'rgba(50, 205, 50, 0.3)',
+      border: '2px solid #32cd32',
+      color: '#aaffaa',
+      padding: '8px 16px',
+      borderRadius: '6px',
+      cursor: 'pointer',
+      fontSize: '0.85rem',
+      fontWeight: 'bold',
+      zIndex: 101,
+      transition: 'all 0.3s ease'
+    },
+    popupOverlay: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.8)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 200
+    },
+    popupContainer: {
+      backgroundColor: '#1a1a1a',
+      padding: '40px',
+      borderRadius: '12px',
+      border: '2px solid #32cd32',
+      boxShadow: '0 0 40px rgba(50, 205, 50, 0.5)',
+      minWidth: '350px'
+    },
+    popupTitle: {
+      fontSize: '1.8rem',
+      fontWeight: 'bold',
+      color: '#32cd32',
+      textAlign: 'center',
+      marginBottom: '25px',
+      textTransform: 'uppercase'
+    },
+    popupForm: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '15px'
+    },
+    popupInput: {
+      padding: '12px',
+      backgroundColor: '#2a2a2a',
+      border: '1px solid #444',
+      borderRadius: '6px',
+      color: '#fff',
+      fontSize: '1rem'
+    },
+    popupButton: {
+      padding: '12px',
+      backgroundColor: '#32cd32',
+      border: 'none',
+      borderRadius: '6px',
+      color: '#000',
+      fontSize: '1rem',
+      fontWeight: 'bold',
+      cursor: 'pointer',
+      marginTop: '10px',
+      transition: 'all 0.3s ease'
+    },
+    popupError: {
+      color: '#ff4444',
+      textAlign: 'center',
+      fontSize: '0.9rem',
+      marginTop: '10px'
+    },
+    popupClose: {
+      marginTop: '15px',
+      padding: '10px',
+      backgroundColor: 'transparent',
+      border: '1px solid #666',
+      borderRadius: '6px',
+      color: '#999',
+      cursor: 'pointer',
+      fontSize: '0.9rem'
     }
   };
 
@@ -555,6 +679,13 @@ export default function App() {
             color: #32cd32;
             text-shadow: 0 0 10px #32cd32;
           }
+          .admin-btn:hover {
+            backgroundColor: rgba(50, 205, 50, 0.5);
+            boxShadow: 0 0 15px rgba(50, 205, 50, 0.6);
+          }
+          .popup-btn:hover {
+            backgroundColor: #28a828;
+          }
         `}
       </style>
       <button 
@@ -588,6 +719,54 @@ export default function App() {
     </div>
   );
 
+  // --- Login Popup Component ---
+    const LoginPopup = () => {
+    if (!showLoginPopup) return null;
+
+    return (
+      <div style={styles.popupOverlay} onClick={() => setShowLoginPopup(false)}>
+        <div style={styles.popupContainer} onClick={(e) => e.stopPropagation()}>
+          <h2 style={styles.popupTitle}>Admin Login</h2>
+          <form style={styles.popupForm} onSubmit={handleLogin}>
+            <input
+              type="text"
+              placeholder="Username"
+              value={loginUsername}
+              onChange={(e) => setLoginUsername(e.target.value)}
+              style={{...styles.popupInput}}
+              autoComplete="username"
+              required
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={loginPassword}
+              onChange={(e) => setLoginPassword(e.target.value)}
+              style={{...styles.popupInput}}
+              autoComplete="current-password"
+              required
+            />
+            <button type="submit" style={{...styles.popupButton}} className="popup-btn">
+              Login
+            </button>
+            {loginError && <div style={styles.popupError}>{loginError}</div>}
+          </form>
+          <button 
+            type="button"
+            style={{...styles.popupClose}}
+            onClick={() => {
+              setShowLoginPopup(false);
+              setLoginError('');
+              setLoginUsername('');
+              setLoginPassword('');
+            }}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    );
+  };
   // --- Render Timeline Page ---
   if (currentPage === 'timeline') {
     const events = [
@@ -602,6 +781,14 @@ export default function App() {
     return (
       <>
         <Navbar />
+        <LoginPopup />
+        <button 
+          className="admin-btn"
+          style={styles.adminButton}
+          onClick={() => setShowLoginPopup(true)}
+        >
+          Admin
+        </button>
         <div style={styles.timelinePage}>
           <style>
             {`
@@ -671,6 +858,14 @@ export default function App() {
     return (
       <>
         <Navbar />
+        <LoginPopup />
+        <button 
+          className="admin-btn"
+          style={styles.adminButton}
+          onClick={() => setShowLoginPopup(true)}
+        >
+          Admin
+        </button>
         <div style={styles.recordPage}>
           <style>
             {`
@@ -800,7 +995,7 @@ export default function App() {
         recipients: medal2Data
       },
       {
-        title: 'Umbra Serpent',
+        title: 'The Umbral Serpent Absolutum',
         description: 'An elite, nearly mythic recognition for Viperes who perform with flawless lethality across all operations.',
         criteria: 'Awarded to the select few to earn the HydraVenom Insignia and Neurobite Crest',
         recipients: medal3Data
@@ -810,6 +1005,14 @@ export default function App() {
     return (
       <>
         <Navbar />
+        <LoginPopup />
+        <button 
+          className="admin-btn"
+          style={styles.adminButton}
+          onClick={() => setShowLoginPopup(true)}
+        >
+          Admin
+        </button>
         <div style={styles.awardsPage}>
           <style>
             {`
@@ -878,6 +1081,14 @@ export default function App() {
   return (
     <>
       <Navbar />
+      <LoginPopup />
+      <button 
+        className="admin-btn"
+        style={styles.adminButton}
+        onClick={() => setShowLoginPopup(true)}
+      >
+        Admin
+      </button>
       <div style={styles.landingPage}>
         <style>
           {`

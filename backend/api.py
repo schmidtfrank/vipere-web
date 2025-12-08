@@ -123,6 +123,16 @@ async def getMedalRecipients(req : web.Request) -> web.Response:
         returnList.append(curr)
     return web.json_response(data=returnList)
 
+@routes.post("/login")
+async def checkLogin(req : web.Request) -> web.Response:
+    attemptUsername = req["user"]
+    attemptPassword = req["password"]
+
+    print(f"user tried {attemptUsername}, and {attemptPassword}")
+
+    return web.Response(status=200)
+
+
 if __name__ == '__main__':
     app = web.Application(middlewares=[
         cors_middleware(origins=["http://localhost:3000"])
