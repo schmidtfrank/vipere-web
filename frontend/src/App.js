@@ -36,6 +36,51 @@ export default function App() {
   const [medal2Data, setMedal2Data] = useState([]);
   const [medal3Data, setMedal3Data] = useState([]);
 
+  // Function to fetch Records page data
+  const fetchRecordsData = () => {
+    fetch('http://localhost:8000/raids')
+      .then(res => res.json())
+      .then(data => setRaidsData(data))
+      .catch(err => console.error('Error fetching Raids data:', err));
+
+    fetch('http://localhost:8000/scrimmages')
+      .then(res => res.json())
+      .then(data => setScrimmagesData(data))
+      .catch(err => console.error('Error fetching Scrimmages data:', err));
+  };
+
+  // Function to fetch Awards page data
+  const fetchAwardsData = () => {
+    fetch('http://localhost:8000/medal/1')
+      .then(res => res.json())
+      .then(data => setMedal1Data(data))
+      .catch(err => console.error('Error fetching Medal 1 data:', err));
+
+    fetch('http://localhost:8000/medal/2')
+      .then(res => res.json())
+      .then(data => setMedal2Data(data))
+      .catch(err => console.error('Error fetching Medal 2 data:', err));
+
+    fetch('http://localhost:8000/medal/3')
+      .then(res => res.json())
+      .then(data => setMedal3Data(data))
+      .catch(err => console.error('Error fetching Medal 3 data:', err));
+  };
+
+  // Function to fetch Landing page data
+  const fetchLandingData = () => {
+    fetch('http://localhost:8000/vipere')
+      .then(res => res.json())
+      .then(data => setVipereData(data))
+      .catch(err => console.error('Error fetching Vipere data:', err));
+
+    fetch('http://localhost:8000/hydras')
+      .then(res => res.json())
+      .then(data => setHydrasData(data))
+      .catch(err => console.error('Error fetching Hydras data:', err));
+  };
+
+  // Initial data load
   useEffect(() => {
     // Generate random stars
     const newStars = [];
@@ -68,42 +113,22 @@ export default function App() {
         setTimeout(() => { setFadeOut(true); setTimeout(() => setShowQuote(false), 1000); }, 4000);
       });
 
-    // Fetch all data
-    fetch('http://localhost:8000/vipere')
-      .then(res => res.json())
-      .then(data => setVipereData(data))
-      .catch(err => console.error('Error fetching Vipere data:', err));
-
-    fetch('http://localhost:8000/hydras')
-      .then(res => res.json())
-      .then(data => setHydrasData(data))
-      .catch(err => console.error('Error fetching Hydras data:', err));
-
-    fetch('http://localhost:8000/raids')
-      .then(res => res.json())
-      .then(data => setRaidsData(data))
-      .catch(err => console.error('Error fetching Raids data:', err));
-
-    fetch('http://localhost:8000/scrimmages')
-      .then(res => res.json())
-      .then(data => setScrimmagesData(data))
-      .catch(err => console.error('Error fetching Scrimmages data:', err));
-
-    fetch('http://localhost:8000/medal/1')
-      .then(res => res.json())
-      .then(data => setMedal1Data(data))
-      .catch(err => console.error('Error fetching Medal 1 data:', err));
-
-    fetch('http://localhost:8000/medal/2')
-      .then(res => res.json())
-      .then(data => setMedal2Data(data))
-      .catch(err => console.error('Error fetching Medal 2 data:', err));
-
-    fetch('http://localhost:8000/medal/3')
-      .then(res => res.json())
-      .then(data => setMedal3Data(data))
-      .catch(err => console.error('Error fetching Medal 3 data:', err));
+    // Fetch all initial data
+    fetchLandingData();
+    fetchRecordsData();
+    fetchAwardsData();
   }, []);
+
+  // Refetch data when navigating to specific pages
+  useEffect(() => {
+    if (currentPage === 'record') {
+      fetchRecordsData();
+    } else if (currentPage === 'awards') {
+      fetchAwardsData();
+    } else if (currentPage === 'home') {
+      fetchLandingData();
+    }
+  }, [currentPage]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -202,7 +227,6 @@ export default function App() {
         <AwardsPage stars={stars} medal1Data={medal1Data} medal2Data={medal2Data} medal3Data={medal3Data} />
       )}
 
-      {}
       {currentPage === 'admin' && isAdmin && (
         <AdminPage 
         stars={stars}

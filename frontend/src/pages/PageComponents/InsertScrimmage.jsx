@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 const scoreOptions = Array.from({ length: 9 }, (_, i) => i + 1);
 
 const InsertScrimmage = () => {
+  const [opponentName, setOpponentName] = useState('');
   const [opponentScore, setOpponentScore] = useState(1);
   const [vipereScore, setVipereScore] = useState(1);
   const [isWin, setIsWin] = useState(false);
@@ -11,8 +12,9 @@ const InsertScrimmage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('Submitting...');
-    
+
     const scrimmageData = {
+      opponentName: opponentName.trim(),
       opponentScore: parseInt(opponentScore, 10),
       vipereScore: parseInt(vipereScore, 10),
       outcome: isWin ? 'Win' : 'Loss'
@@ -27,6 +29,7 @@ const InsertScrimmage = () => {
 
       if (response.ok) {
         setMessage('Scrimmage successfully recorded!');
+        setOpponentName('');
         setOpponentScore(1);
         setVipereScore(1);
         setIsWin(false);
@@ -41,19 +44,63 @@ const InsertScrimmage = () => {
   };
 
   const formStyle = { 
-      maxWidth: '500px', margin: '0 auto', padding: '20px', 
-      backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: '8px', 
-      color: '#fff' 
+    maxWidth: '500px', 
+    margin: '0 auto', 
+    padding: '20px', 
+    backgroundColor: 'rgba(255, 255, 255, 0.1)', 
+    borderRadius: '8px', 
+    color: '#fff' 
   };
-  const selectStyle = { width: '100%', padding: '10px', margin: '10px 0', borderRadius: '4px', border: 'none' };
-  const labelStyle = { display: 'block', margin: '10px 0 5px 0', fontWeight: 'bold' };
-  const buttonStyle = { padding: '10px 20px', backgroundColor: '#32cd32', color: '#090A0F', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold', display:'block',width:'100%' };
+
+  const inputStyle = { 
+    width: '100%', 
+    padding: '10px', 
+    margin: '10px 0', 
+    borderRadius: '4px', 
+    border: 'none',
+    boxSizing: 'border-box'
+  };
+
+  const selectStyle = { 
+    width: '100%', 
+    padding: '10px', 
+    margin: '10px 0', 
+    borderRadius: '4px', 
+    border: 'none' 
+  };
+
+  const labelStyle = { 
+    display: 'block', 
+    margin: '10px 0 5px 0', 
+    fontWeight: 'bold' 
+  };
+
+  const buttonStyle = { 
+    padding: '10px 20px', 
+    backgroundColor: '#32cd32', 
+    color: '#090A0F', 
+    border: 'none', 
+    borderRadius: '4px', 
+    cursor: 'pointer', 
+    fontWeight: 'bold', 
+    display: 'block', 
+    width: '100%' 
+  };
 
   return (
     <div style={formStyle}>
       <h2 style={{ textAlign: 'center', color: '#32cd32' }}>Insert Scrimmage Result</h2>
-      <form onSubmit={handleSubmit}>
-        
+      <div onSubmit={handleSubmit}>
+        <label style={labelStyle}>Opponent Name:</label>
+        <input 
+          type="text"
+          value={opponentName} 
+          onChange={(e) => setOpponentName(e.target.value)} 
+          placeholder="Enter opponent team name"
+          required 
+          style={inputStyle}
+        />
+
         <label style={labelStyle}>Opponent Score (1-9):</label>
         <select 
           value={opponentScore} 
@@ -63,7 +110,7 @@ const InsertScrimmage = () => {
         >
           {scoreOptions.map(score => <option key={score} value={score}>{score}</option>)}
         </select>
-        
+
         <label style={labelStyle}>Vipere Score (1-9):</label>
         <select 
           value={vipereScore} 
@@ -82,9 +129,9 @@ const InsertScrimmage = () => {
           style={{ transform: 'scale(1.5)', margin: '0 10px' }}
         />
         <span style={{ color: isWin ? '#32cd32' : '#ff4d4d' }}>{isWin ? 'Win' : 'Loss'}</span>
-        
-        <button type="submit" style={{ ...buttonStyle, marginTop: '20px' }}>Record Scrimmage</button>
-      </form>
+
+        <button onClick={handleSubmit} style={{ ...buttonStyle, marginTop: '20px' }}>Record Scrimmage</button>
+      </div>
       {message && <p style={{ textAlign: 'center', marginTop: '15px' }}>{message}</p>}
     </div>
   );
