@@ -151,7 +151,7 @@ async def checkLogin(req : web.Request) -> web.Response:
 
 @routes.post("/raid")
 async def addRaid(req : web.Request) -> web.Response:
-    #request sent as request["opponent"], request["outcome"]
+    #request sent as request["opponent"] : string, request["outcome"] : char
     request = await req.json()
 
     opponent = request["opponent"]
@@ -168,7 +168,23 @@ async def addRaid(req : web.Request) -> web.Response:
 
 @routes.post("/scrimmage")
 async def addScrimmage(req : web.Request) -> web.Response:
-    raise Exception(NotImplementedError)
+    #opponentName : string , opponentScore : int, vipereScore : int, outcome : char
+    request = await req.json()
+
+    opponent = request["opponentName"]
+    opponentScore = request["opponentScore"]
+    vipereScore = request["vipereScore"]
+    outcome = request["outcome"]
+
+    con = sqlite3.connect("vipere.db")
+    cur = con.cursor()
+
+    cur.execute("INSERT INTO Scrimmages VALUES((SELECT MAX(ScrimID) FROM Scrimmages)+1,?,?,?,?)",(opponent,opponentScore,vipereScore,outcome,))
+
+    #commit transaction
+    con.commit()
+    raise NotImplementedError
+    return web.Response(status=200)
 
 
 if __name__ == '__main__':

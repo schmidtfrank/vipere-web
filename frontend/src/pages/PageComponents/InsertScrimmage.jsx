@@ -17,7 +17,7 @@ const InsertScrimmage = () => {
       opponentName: opponentName.trim(),
       opponentScore: parseInt(opponentScore, 10),
       vipereScore: parseInt(vipereScore, 10),
-      outcome: isWin ? 'Win' : 'Loss'
+      outcome: isWin ? 'W' : 'L'
     };
 
     try {
