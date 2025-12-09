@@ -2,6 +2,7 @@ import React from 'react';
 import InsertRaid from './PageComponents/InsertRaid';
 import InsertScrimmage from './PageComponents/InsertScrimmage';
 import InsertMedal from './PageComponents/InsertMedal';
+import DeleteMenu from './PageComponents/DeleteMenu';
 
 
 const AdminPage = ({ stars, currentAdminPage, setCurrentAdminPage }) => {
@@ -84,6 +85,9 @@ const AdminPage = ({ stars, currentAdminPage, setCurrentAdminPage }) => {
             <div style={navItemStyle('insert-medal')} onClick={() => setCurrentAdminPage('insert-medal')}>
               INSERT MEDAL
             </div>
+            <div style={navItemStyle('delete-menu')} onClick={() => setCurrentAdminPage('delete-menu')}>
+              DELETE MENU
+            </div>
           </div>
           
           {}
@@ -91,6 +95,7 @@ const AdminPage = ({ stars, currentAdminPage, setCurrentAdminPage }) => {
             {currentAdminPage === 'insert-raid' && <InsertRaid />}
             {currentAdminPage === 'insert-scrimmage' && <InsertScrimmage />}
             {currentAdminPage === 'insert-medal' && <InsertMedal />}
+            {currentAdminPage === 'delete-menu' && <DeleteMenu />}
           </div>
       </div>
     </div>

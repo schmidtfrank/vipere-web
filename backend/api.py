@@ -70,14 +70,15 @@ async def getRaid(req : web.Request) -> web.Response:
     con = sqlite3.connect("vipere.db")
     cur = con.cursor()
 
-    response = cur.execute("SELECT OppName, Outcome FROM Raids")
+    response = cur.execute("SELECT RaidID, OppName, Outcome FROM Raids")
     raidOutcomes = response.fetchall()
 
     returnList = []
-    for Opponent, Outcome in raidOutcomes:
+    for RaidID, Opponent, Outcome in raidOutcomes:
         currVal = dict()
         currVal["OppName"] = Opponent
         currVal["Outcome"] = Outcome
+        currVal["RaidID"] = RaidID
         returnList.append(currVal)
     return web.json_response(data=returnList)
 
@@ -86,16 +87,17 @@ async def getScrims(req : web.Request) -> web.Response:
     con = sqlite3.connect("vipere.db")
     cur = con.cursor()
 
-    response = cur.execute("SELECT OppName, VipereScore, OppScore, Outcome FROM Scrimmages")
+    response = cur.execute("SELECT ScrimID, OppName, VipereScore, OppScore, Outcome FROM Scrimmages")
     scrimOutcomes = response.fetchall()
 
     returnList = []
-    for OppName, VipereScore, OppScore, Outcomes in scrimOutcomes:
+    for ScrimID, OppName, VipereScore, OppScore, Outcomes in scrimOutcomes:
         curr = dict()
         curr["OppName"] = OppName
         curr["VipereScore"] = VipereScore
         curr["OppScore"] = OppScore
         curr["Outcome"] = Outcomes
+        curr["ScrimID"] = ScrimID
         returnList.append(curr)
     return web.json_response(data=returnList)
 
@@ -209,8 +211,57 @@ async def addAward(req : web.Request) -> web.Response:
     con.commit()
     return web.Response(status=200)
 
+@routes.post("/delete/{type}")
+async def removeDatabase(req : web.Request) -> web.Response:
+    deleteType = req.match_info["type"]
+    request = await req.json()
 
+    if deleteType == "scrimmage":
+        if not deleteScrim(request):
+            return web.Response(status=400)
+    elif deleteType == "raid":
+        if not deleteRaid(request):
+            return web.Response(status=400)
+    elif deleteType == "medal":
+        if not deleteMedal(request):
+            return web.Response(status=400)
+    else:
+        return web.Response(status=400, data={"request-type":"invalid"})
 
+    return web.Response(status=200)
+
+def deleteScrim(request : dict):
+    #ScrimID : int
+    con = sqlite3.connect("vipere.db")
+    cur = con.cursor()
+
+    cur.execute("DELETE FROM Scrimmages WHERE ScrimID = ?",(int(request["ScrimID"]),))
+    #commit deletion
+    con.commit()
+    return True
+
+def deleteRaid(request : dict):
+    #RaidID : int
+    con = sqlite3.connect("vipere.db")
+    cur = con.cursor()
+
+    cur.execute("DELETE FROM Raids WHERE RaidID = ?",(request["RaidID"],))
+    #commit deletion
+    con.commit()
+    return True
+
+def deleteMedal(request : dict):
+    #user: user : string, medal: 1
+    con = sqlite3.connect("vipere.db")
+    cur = con.cursor()
+
+    findUser = cur.execute("SELECT UserID FROM People WHERE Username = ?",(request["user"][0],))
+    userID = int(findUser.fetchone()[0])
+
+    cur.execute("DELETE FROM UserMedals WHERE UserID = ? AND MedalID = ?",(userID,request["medal"]))
+    #commit deletion
+    con.commit()
+    return True
 
 if __name__ == '__main__':
     app = web.Application(middlewares=[
