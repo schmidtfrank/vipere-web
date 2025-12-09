@@ -197,7 +197,7 @@ export default function App() {
           }
         `}
       </style>
-      <Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} />
+      {!isAdmin && <Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} />}
       <LoginPopup 
         show={showLoginPopup}
         onClose={handleCloseLogin}
@@ -211,7 +211,14 @@ export default function App() {
       <button 
         className="admin-btn"
         style={adminButtonStyle}
-        onClick={() => isAdmin ? setIsAdmin(false) : setShowLoginPopup(true)}
+        onClick={() => {
+          if (isAdmin) {
+            setIsAdmin(false);
+            setCurrentPage('home');
+          } else {
+            setShowLoginPopup(true);
+          }
+        }}
       >
         {isAdmin ? 'Logout' : 'Admin'}
       </button>
