@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 const medalOptions = [
   'Neurobite Crest',
   'Hydravenom Insignia',
-  'The Umbral Serpent Absolutum'
+  'Umbra Serpent'
 ];
 
 const InsertMedal = () => {

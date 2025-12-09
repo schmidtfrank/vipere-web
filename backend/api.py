@@ -263,6 +263,28 @@ def deleteMedal(request : dict):
     con.commit()
     return True
 
+@routes.get("/win_loss/{event}")
+async def win_loss_stats(req : web.Request) -> web.Response:
+    event_type = req.match_info["event"]
+    table = "Raids" if event_type == "raid" else "Scrimmages"
+
+    con = sqlite3.connect("vipere.db")
+    cur = con.cursor()
+
+    winQuery = cur.execute(f"SELECT COUNT(*) FROM {table} WHERE Outcome = \"W\"")
+    numWins = winQuery.fetchone()
+    numWins = 0 if numWins is None else numWins[0]
+
+    lossQuery = cur.execute(f"SELECT COUNT(*) FROM {table} WHERE Outcome = \"L\"")
+    numLoss = lossQuery.fetchone()
+    numLoss = 0 if numLoss is None else numLoss[0]
+
+    output = dict()
+    output["wins"] = numWins
+    output["losses"] = numLoss
+
+    return web.json_response(data=output)
+
 if __name__ == '__main__':
     app = web.Application(middlewares=[
         cors_middleware(origins=["http://localhost:3000"])

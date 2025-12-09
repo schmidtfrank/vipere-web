@@ -15,8 +15,8 @@ const AwardsPage = ({ stars, medal1Data, medal2Data, medal3Data }) => {
       recipients: medal2Data
     },
     {
-      title: 'The Umbral Serpent Absolutum',
-      description: 'An elite, nearly mythic recognition for Viperes who perform with flawless lethality across all operations.',
+      title: 'Umbra Serpent',
+      description: 'An elite, near-mythic honor for Viperes whose flawless lethality spans every operation, from swift strikes to prolonged engagements.',
       criteria: 'Awarded to the select few to earn the HydraVenom Insignia and Neurobite Crest',
       recipients: medal3Data
     }

@@ -39,8 +39,8 @@ const TimelinePage = ({ stars }) => {
     timelineLine: {
       position: 'absolute',
       left: '50%',
-      top: 0,
-      height: 'calc(100% - 150px)',
+      top: '50px',
+      height: 'calc(94% - 150px)',
       width: '4px',
       background: 'linear-gradient(to bottom, #32cd32, #008000)',
       transform: 'translateX(-50%)'

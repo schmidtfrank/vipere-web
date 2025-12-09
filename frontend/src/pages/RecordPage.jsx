@@ -1,6 +1,24 @@
+import { useState, useEffect } from 'react';
 import StarsBackground from "./PageComponents/StarsBackground";
 
 const RecordPage = ({ stars, raidsData, scrimmagesData }) => {
+  const [raidWinLoss, setRaidWinLoss] = useState({ wins: 0, losses: 0 });
+  const [scrimWinLoss, setScrimWinLoss] = useState({ wins: 0, losses: 0 });
+
+  useEffect(() => {
+    // Fetch raid win/loss data
+    fetch('http://localhost:8000/win_loss/raid')
+      .then(res => res.json())
+      .then(data => setRaidWinLoss(data))
+      .catch(err => console.error('Error fetching raid win/loss:', err));
+
+    // Fetch scrimmage win/loss data
+    fetch('http://localhost:8000/win_loss/scrimmage')
+      .then(res => res.json())
+      .then(data => setScrimWinLoss(data))
+      .catch(err => console.error('Error fetching scrimmage win/loss:', err));
+  }, [raidsData, scrimmagesData]);
+
   const styles = {
     recordPage: {
       minHeight: '100vh',
@@ -47,6 +65,18 @@ const RecordPage = ({ stars, raidsData, scrimmagesData }) => {
       marginBottom: '25px',
       textTransform: 'uppercase',
       letterSpacing: '2px'
+    },
+    winLossCounter: {
+      fontSize: '1.5rem',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      marginBottom: '20px'
+    },
+    winText: {
+      color: '#32cd32'
+    },
+    lossText: {
+      color: '#ff4444'
     },
     recordTable: {
       width: '100%',
@@ -100,7 +130,12 @@ const RecordPage = ({ stars, raidsData, scrimmagesData }) => {
 
       <div style={styles.recordContainer}>
         <div style={styles.recordSection}>
-          <h2 style={styles.recordSectionTitle}>Raid Wins</h2>
+          <h2 style={styles.recordSectionTitle}>Raid Record</h2>
+          <div style={styles.winLossCounter}>
+            <span style={styles.winText}>{raidWinLoss.wins}</span>
+            <span style={{ color: '#fff' }}> - </span>
+            <span style={styles.lossText}>{raidWinLoss.losses}</span>
+          </div>
           <table style={styles.recordTable}>
             <thead>
               <tr>
@@ -133,7 +168,12 @@ const RecordPage = ({ stars, raidsData, scrimmagesData }) => {
         </div>
 
         <div style={styles.recordSection}>
-          <h2 style={styles.recordSectionTitle}>Scrimmage Wins</h2>
+          <h2 style={styles.recordSectionTitle}>Scrimmage Record</h2>
+          <div style={styles.winLossCounter}>
+            <span style={styles.winText}>{scrimWinLoss.wins}</span>
+            <span style={{ color: '#fff' }}> - </span>
+            <span style={styles.lossText}>{scrimWinLoss.losses}</span>
+          </div>
           <table style={styles.recordTable}>
             <thead>
               <tr>

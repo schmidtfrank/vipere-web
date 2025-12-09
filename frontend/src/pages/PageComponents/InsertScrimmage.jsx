@@ -121,7 +121,7 @@ const InsertScrimmage = () => {
           {scoreOptions.map(score => <option key={score} value={score}>{score}</option>)}
         </select>
 
-        <label style={labelStyle}>Outcome (Based on scores, check if Win):</label>
+        <label style={labelStyle}>Outcome (Check if won)</label>
         <input 
           type="checkbox" 
           checked={isWin} 

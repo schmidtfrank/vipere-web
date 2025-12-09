@@ -13,7 +13,7 @@ const DeleteMenu = () => {
   const medalTypes = [
     { id: 1, name: 'Neurobite Crest' },
     { id: 2, name: 'Hydravenom Insignia' },
-    { id: 3, name: 'The Umbral Serpent Absolutum' }
+    { id: 3, name: 'Umbra Serpent' }
   ];
 
   // Fetch data based on delete type

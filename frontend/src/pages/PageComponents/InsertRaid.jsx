@@ -57,7 +57,7 @@ const InsertRaid = () => {
           style={inputStyle} 
         />
         
-        <label style={labelStyle}>Outcome:</label>
+        <label style={labelStyle}>Outcome: (check if won)</label>
         <input 
           type="checkbox" 
           checked={isWin} 
